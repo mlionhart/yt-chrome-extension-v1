@@ -2,7 +2,9 @@
 
 This is my first browser extension. 
 
-Why I created it: I've been a YouTuber for about 6 years, and I conduct a lot of polls and question posts on my YT community page. The problem is, if I want to get access to a poll or post older than a few months or years, there's no way to do that without sitting there scrolling for an hour.
+# Why I Created this Extension
+
+I've been a YouTuber for about 6 years, and I conduct a lot of polls and question posts on my YT community page. The problem is, if I want to get access to a poll or post older than a few months or years, there's no way to do that without sitting there scrolling for an hour.
 
 I had originally planned on using the YT data API for this project, but YT does not provide post data through their API, so I had to find a workaround. This workaround involved finding the exact url for post information in YT analytics, and programmatically selecting the option "download to csv." After the zip file is downloaded, the extension unzips it, parses the data into JSON, and stores it into web storage for future access.
 
