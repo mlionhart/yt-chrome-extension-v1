@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSV Extractor</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      width: 200px;
+      padding: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 class="popup2-h1">Export Data</h1>
+  <button id="startExportProcessButton">Download Latest Post Data</button>
+  <p id="file-message">Open file picker and select the zip file just downloaded</p>
+  <button id="selectFileButton">Select File</button>
+  <input type="file" id="filePicker" style="display: none;">
+  <div class="timer-div"></div>
+  <button id="retrieveDataButton">Retrieve Data</button>
+  <button id="homeButton">Back to Home</button>
+  <div id="file-contents"></div>
+
+  <script src="js/papaparse.min.js"></script>
+  <script src="js/jszip.min.js"></script>
+  <script src="popup2.js"></script>
+  <script src="content.js"></script>
+  <script src="background.js"></script>
+</body>
+
+</html>

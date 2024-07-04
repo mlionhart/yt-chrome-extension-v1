@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <title>YT Post Data</title>
+  <style>
+    body {
+      background-color: #333;
+    }
+
+    h2 {
+      color: white;
+    }
+
+    .form-container {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .form-container .form-floating {
+      flex: 1;
+    }
+
+    .form-container .form-select-container {
+      flex: 0 1 auto;
+    }
+
+    .form-floating {
+      margin-bottom: 0;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div id="message"></div>
+    <div class="form-container">
+      <div class="form-floating">
+        <input type="text" id="search-term" class="form-control" name="search-term"
+          placeholder="Enter Search Term of Phrase">
+        <label for="search-term"></label>
+      </div>
+      <div class="form-select-container">
+        <div class="form-floating">
+          <select class="form-select" name="sort" id="sort">
+            <option value="date">Sort By:</option>
+            <option value="date">Date</option>
+            <option value="impressions">Impressions</option>
+            <option value="likes">Likes</option>
+            <option value="response">Comments</option>
+            <option value="response-rate">Response %</option>
+            <option value="like-rate">Like %</option>
+          </select>
+          <label for="sort"></label>
+        </div>
+      </div>
+      <div class="form-select-container">
+        <div class="form-floating">
+          <select class="form-select" name="sortDir" id="sortDir">
+            <option value="desc">Order:</option>
+            <option value="asc">Asc.</option>
+            <option value="desc">Desc.</option>
+          </select>
+          <label for="sortDir"></label>
+        </div>
+      </div>
+    </div>
+
+    <h2>Number of Posts: <span class="post-count"></span></h2>
+
+    <!-- <a href="#" class="update-link">Update Data</a> -->
+    <div class="dropdown">
+      <button class="dropbtn">Update</button>
+      <div id="myDropdown" class="dropdown-content">
+        <a href="#" class="update-link">Get Latest Data</a>
+        <a href="#" class="update-link-zip">Upload Zip File</a>
+      </div>
+    </div>
+
+    <div class="container p-0 special">
+      <div id="card-container"></div>
+    </div>
+
+  </div>
+  <script src="js/jquery-3.7.1.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="popup.js"></script>
+  <script src="background.js"></script>
+
+</body>
+
+</html>
