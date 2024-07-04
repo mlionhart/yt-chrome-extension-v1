@@ -2,7 +2,7 @@
 
 This is my first browser extension. 
 
-# Why I Created this Extension
+## Why I Created this Extension
 
 I've been a YouTuber for about 6 years, and I conduct a lot of polls and question posts on my YT community page. The problem is, if I want to get access to a poll or post older than a few months or years, there's no way to do that without sitting there scrolling for an hour.
 
