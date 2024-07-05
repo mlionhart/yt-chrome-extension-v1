@@ -36,5 +36,14 @@ To use this project, follow these steps:
 
 1. Follow steps 7-8 above
 
-## Adding a new feature yayayyyyy!!!
+## Support
+If you encounter any issues or have questions, please reach out to us:
+- **Email**: mike@lionhartweb.com
+- **GitHub Issues**: [Submit an issue](https://github.com/mlionhart/yt-chrome-extension-v1/issues)
+
+## Changelog
+- **v1.0**: Initial release.
+
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
