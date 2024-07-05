@@ -2,6 +2,14 @@
 
 This is my first browser extension. 
 
+## Overview
+YouTube Community Search is a Chrome extension that allows you to search community posts. You can quickly find any post, no matter how long ago you created it. 
+
+## Features
+- Search community posts seamlessly. 
+- Filter by impressions, likes, date, like rate, and response rate
+- Easy to use interface.
+
 ## Why I Created this Extension
 
 I've been a YouTuber for about 6 years, and I conduct a lot of polls and question posts on my YT community page. The problem is, if I want to get access to a poll or post older than a few months or years, there's no way to do that without sitting there scrolling for an hour.
