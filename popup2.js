@@ -8,27 +8,10 @@ const timerDiv = document.querySelector(".timer-div");
 const justZip = false;
 
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("Popup DOM loaded");
-
-  // Open Analytics Button
-  // document
-  //   .getElementById("openAnalyticsButton")
-  //   .addEventListener("click", () => {
-  //     console.log("Open Analytics button clicked");
-  //     chrome.runtime.sendMessage({ action: "getChannelId" }, (response) => {
-  //       if (response.success) {
-  //         console.log("Analytics page opened, tab ID:", response.tabId);
-  //       } else {
-  //         console.error("Error opening analytics page:", response.error);
-  //       }
-  //     });
-  //   });
 
   // listen for justZipComplete from background
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "justZipComplete") {
-      console.log("Handling 'justZipComplete' action");
-
       h1.innerText = "Select Zip File";
       exportButton.style.display = "none";
       fileMessage.style.display = "block";
@@ -43,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // Listen for download complete message from background
   chrome.runtime.onMessage.addListener(function (message) {
     if (message.action === "downloadComplete") {
-      console.log("File download completed, notifying popup");
       // after file downloads, hide export button, show file select
       h1.innerText = "Select Zip File";
       exportButton.style.display = "none";
@@ -51,12 +33,6 @@ document.addEventListener("DOMContentLoaded", function () {
       fileSelect.style.display = "block";
       fileSelect.focus();
     }
-    // else if (message.action === "fileSelected") {
-    //   console.log("File Selected");
-    //   h1.innerText = "View Data";
-    //   fileSelect.style.display = "None";
-    //   retrieveDataButton.style.display = "block";
-    // }
   });
 
   function timerDivCountdown() {
@@ -77,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
   document
     .getElementById("startExportProcessButton")
     .addEventListener("click", () => {
-      console.log("Start Export Process button clicked");
       chrome.runtime.sendMessage(
         { action: "clickDownloadButton" },
         (response) => {
@@ -86,8 +61,6 @@ document.addEventListener("DOMContentLoaded", function () {
               "Error sending clickDownloadButton message:",
               chrome.runtime.lastError.message
             );
-          } else {
-            console.log("Message sent to background script:", response);
           }
         }
       );
@@ -97,8 +70,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Home button
   document.getElementById("homeButton").addEventListener("click", () => {
-    console.log("Home button clicked");
-
     if (justZip === false) {
       // Send a message to background script to open the main popup
       chrome.runtime.sendMessage({ action: "openMainPopup" }, (response) => {
@@ -121,13 +92,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Select File Button
   document.getElementById("selectFileButton").addEventListener("click", () => {
-    console.log("Select File button clicked");
     document.getElementById("filePicker").click();
   });
 
   // File Picker Change Event
   document.getElementById("filePicker").addEventListener("change", (event) => {
-    console.log("File input changed");
 
     h1.innerText = "Raw File Data:";
     homeButton.style.display = "block";
@@ -137,15 +106,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const file = event.target.files[0];
     if (file) {
-      console.log("File selected:", file.name);
       const reader = new FileReader();
       reader.onload = function () {
         const zip = new JSZip();
-        console.log("Starting to load ZIP content");
         zip
           .loadAsync(reader.result)
           .then((zipContent) => {
-            console.log("ZIP content loaded successfully");
             const csvFile = zipContent.file("Table data.csv");
             if (csvFile) {
               csvFile
@@ -193,11 +159,9 @@ document.addEventListener("DOMContentLoaded", function () {
   document
     .getElementById("retrieveDataButton")
     .addEventListener("click", () => {
-      console.log("Retrieve Data button clicked");
 
       chrome.storage.local.get("tableDataJson", (data) => {
         if (data.tableDataJson) {
-          console.log("JSON data found in storage:", data.tableDataJson);
           const jsonData = JSON.parse(data.tableDataJson);
           const fileContentDiv = document.createElement("div");
           fileContentDiv.innerHTML = `<h3>Table data.csv</h3><pre>${JSON.stringify(
@@ -212,13 +176,4 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
     });
-
-  // document.getElementById("navigateToPopup").addEventListener("click", () => {
-  //   chrome.windows.create({
-  //     url: chrome.runtime.getURL("popup.html"),
-  //     type: "popup",
-  //     width: 400,
-  //     height: 400,
-  //   });
-  // });
 });

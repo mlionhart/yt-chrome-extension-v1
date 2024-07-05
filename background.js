@@ -2,70 +2,12 @@ let tabCreated = false;
 let tabId = null;
 let channelId = null;
 
-// function getAuthToken() {
-//   const clientId =
-//     "1047863369626-3ar5lcgo2c2hmf65ka5jqr98mgirumut.apps.googleusercontent.com";
-//   const redirectUri = chrome.identity.getRedirectURL();
-//   const authUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&response_type=token&redirect_uri=${redirectUri}&scope=https://www.googleapis.com/auth/youtube.readonly&flowName=GeneralOAuthFlow`;
-
-//   return new Promise((resolve, reject) => {
-//     console.log("Launching web auth flow");
-//     chrome.identity.launchWebAuthFlow(
-//       { interactive: true, url: authUrl },
-//       (redirectUri) => {
-//         if (chrome.runtime.lastError) {
-//           console.error("Error during auth flow:", chrome.runtime.lastError);
-//           reject(chrome.runtime.lastError);
-//           return;
-//         }
-
-//         const params = new URLSearchParams(
-//           new URL(redirectUri).hash.substring(1)
-//         );
-//         const accessToken = params.get("access_token");
-//         if (accessToken) {
-//           console.log("Access token obtained:", accessToken);
-//           resolve(accessToken);
-//         } else {
-//           console.error("Access token not found");
-//           reject("Access token not found");
-//         }
-//       }
-//     );
-//   });
-// }
-
-// function getChannelId(token) {
-//   console.log("Fetching channel ID with token:", token);
-//   return fetch(
-//     "https://www.googleapis.com/youtube/v3/channels?part=id&mine=true",
-//     {
-//       headers: { Authorization: `Bearer ${token}` },
-//     }
-//   )
-//     .then((response) => response.json())
-//     .then((data) => {
-//       if (data.items && data.items.length > 0) {
-//         console.log("Channel ID obtained:", data.items[0].id);
-//         return data.items[0].id;
-//       } else {
-//         throw new Error("No channel found");
-//       }
-//     })
-//     .catch((error) => {
-//       console.error("Error fetching channel ID:", error);
-//       throw error;
-//     });
-// }
-
 function getLink(channelId) {
   const link = `https://studio.youtube.com/channel/${channelId}/analytics/tab-overview/period-4_weeks/explore?entity_type=CHANNEL&entity_id=${channelId}&time_period=lifetime&explore_type=TABLE_AND_CHART&metrics_computation_type=DELTA&metric=POST_IMPRESSIONS&granularity=DAY&t_metrics=POST_IMPRESSIONS&t_metrics=POST_LIKES&t_metrics=POST_VOTES&t_metrics=POST_LIKES_PER_IMPRESSIONS&t_metrics=POST_VOTES_PER_IMPRESSIONS&v_metrics=VIEWS&v_metrics=WATCH_TIME&v_metrics=SUBSCRIBERS_NET_CHANGE&v_metrics=TOTAL_ESTIMATED_EARNINGS&v_metrics=VIDEO_THUMBNAIL_IMPRESSIONS&v_metrics=VIDEO_THUMBNAIL_IMPRESSIONS_VTR&dimension=POST&o_column=POST_IMPRESSIONS&o_direction=ANALYTICS_ORDER_DIRECTION_DESC`;
-  console.log("Generated link:", link);
   return link;
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log("Message received:", request.action);
 
   if (request.action === "getChannelId") {
     if (!tabCreated) {
@@ -74,7 +16,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       try {
         const link = getLink(channelId);
         chrome.tabs.create({ url: link }, (tab) => {
-          console.log("New tab created with ID:", tab.id);
           tabId = tab.id;
           tabCreated = true;
           sendResponse({ success: true, tabId: tab.id });
@@ -94,7 +35,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       return true; // Keep the message channel open for sendResponse
     }
   } else if (request.action === "clickDownloadButton") {
-    console.log("clickDownloadButton action received");
     if (tabId) {
       chrome.tabs.sendMessage(
         tabId,
@@ -107,7 +47,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             );
             sendResponse({ error: chrome.runtime.lastError.message });
           } else {
-            console.log("Message sent to content script:", response);
             sendResponse(response);
           }
         }
@@ -125,17 +64,13 @@ chrome.tabs.onRemoved.addListener((removedTabId) => {
   if (removedTabId === tabId) {
     tabCreated = false;
     tabId = null;
-    console.log("Tab closed. Resetting tabCreated and tabId.");
   }
 });
 
 // Listen for messages from content scripts or other parts of the extension
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log("Message received:", request.action);
 
   if (request.action === "justZip") {
-    // Perform operations related to zip upload here if needed
-    console.log("Handling 'justZip' action");
 
     // Create popup2.html window
     chrome.windows.create({
@@ -177,7 +112,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // listen for openMainPopup message from popup2.js
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log("Message received:", request.action);
 
   if (request.action === "openMainPopup") {
     // Close popup2.html window
@@ -201,7 +135,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               error: chrome.runtime.lastError.message,
             });
           } else {
-            console.log("Main popup opened successfully");
             sendResponse({ success: true });
           }
         }
@@ -212,7 +145,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (request.action === "closeWindowOnly") {
     // Close popup2.html window
     chrome.windows.remove(sender.tab.windowId, () => {
-      console.log("Popup2.html window closed");
       sendResponse({ success: true });
     });
   }
@@ -222,7 +154,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Listen for download complete message from content script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "downloadComplete") {
-    console.log("File download completed, notifying popup");
     // Ensure sendResponse is called asynchronously to prevent message channel closure
     setTimeout(() => {
       sendResponse({ success: true });
@@ -231,4 +162,3 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-console.log("Background script loaded and event listeners registered");

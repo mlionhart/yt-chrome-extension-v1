@@ -30,15 +30,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Function to handle the main process
   function handleProcess(channelId) {
-    console.log("Channel ID:", channelId);
     chrome.runtime.sendMessage(
       { action: "getChannelId", channelId: channelId },
       (response) => {
         if (response.success) {
-          console.log("Analytics page opened, tab ID:", response.tabId);
           message.textContent = "Analytics page opened successfully.";
         } else {
-          console.error("Error opening analytics page:", response.error);
           message.textContent = "Error opening analytics page.";
         }
       }
@@ -47,12 +44,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Added event listener for update link
   updateLink.addEventListener("click", () => {
-    console.log("Open Analytics button clicked");
 
     // Check if channel ID is in local storage
     chrome.storage.local.get("channel-id", (result) => {
       let channelId = result["channel-id"];
-      console.log("Retrieved Channel ID from storage:", channelId); // Debug statement
       if (channelId) {
         handleProcess(channelId);
       } else {
@@ -73,7 +68,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Added event listener for update link
   updateLinkZip.addEventListener("click", () => {
-    console.log("Upload Zip button clicked");
     chrome.runtime.sendMessage({ action: "justZip" }, (response) => {
       if (response.success) {
         console.log("Zip upload operation successful");
@@ -84,14 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // function highlight(p, word) {
-  //   // create word
-  //   let newWord = `<mark>${word}</mark>`;
-
-  //   let newStr = p.replaceAll(word, newWord);
-
-  //   return newStr;
-  // } 
 
   function highlight(p, word) {
     const lowerCaseWord = word.toLowerCase();
@@ -106,8 +92,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   
   function printItems(res, inp) {
-    console.log("printItems Called");
-    console.log("Data received:", res);
     let output = "";
 
     if (inp !== "") {
@@ -132,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }
 
           if (key === "Post") {
-            postLink = `<a href="https://www.youtube.com/post/${value}" class="btn btn-primary" target="_blank">View Post</a>`;
+            postLink = `https://www.youtube.com/post/${value}`;
           } else if (key === "Post text") {
             postText = value;
           } else if (key === "Post publish time") {
@@ -151,16 +135,26 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         output += `
-          <div class="card w-100 mb-3">
-            <div class="card-body">
-              <h6 class="card-title">${postText}</h5>
-              <p class="card-text">Published on: ${postTime}</p>
-              <p class="card-text">Impressions: ${postImpressions}</p>
-              <p class="card-text">Likes: ${postLikes}</p>
-              <p class="card-text">Responses: ${postResponses}</p>
-              <p class="card-text">Like Rate: ${postLikeRate}%</p>
-              <p class="card-text">Response Rate: ${postResponseRate}%</p>
-              ${postLink}
+          <div class="card w-100 mb-3 p-0">
+            <div class="card-body p-0">
+              <p class="time">${postTime}</p>
+              <a class="card-title-link" href=${postLink} target="_blank" style="text-decoration: none; color: inherit;">
+                <h6 class="card-title" title="Click to View Post">${postText}</h6>
+              </a>
+              <div class="info-bar">
+                <span class="card-text likes">
+                  <i class="bi bi-suit-heart-fill" style="color: red;"></i>
+                  <span class="post-likes">${postLikes}<sup title="Like Rate (LR)" style="color:red;"> ${postLikeRate}%</sup></span>
+                </span>
+                <span class="card-text impressions" title="Post Impressions (Number of times your post was seen)">
+                  <i class="bi bi-bar-chart-line-fill" style="color:#333;"></i>
+                  <span class="post-impressions">${postImpressions}</span>
+                </span>
+                <span class="card-text comments">
+                  <i class="bi bi-chat"></i>
+                  <span class="post-comments">${postResponses}<sup title="Response Rate (Comment Rate)" style="color:red;"> ${postResponseRate}%</sup></span>
+                </span>
+              </div>
             </div>
           </div>
         `;
@@ -180,7 +174,7 @@ document.addEventListener("DOMContentLoaded", function () {
           postCount.innerHTML = res.length;
 
           if (key === "Post") {
-            postLink = `<a href="https://www.youtube.com/post/${value}" class="btn btn-primary" target="_blank">View Post</a>`;
+            postLink = `https://www.youtube.com/post/${value}`;
           } else if (key === "Post text") {
             postText = value;
           } else if (key === "Post publish time") {
@@ -196,67 +190,39 @@ document.addEventListener("DOMContentLoaded", function () {
           } else if (key === "Post response rate (%)") {
             postResponseRate = value;
           }
-
-          //  chrome.runtime.sendMessage(
-          //    { action: "fetchPageContent", postLink },
-          //    (response) => {
-          //      if (response.success) {
-          //        const html = response.html;
-          //        const parser = new DOMParser();
-          //        const doc = parser.parseFromString(html, "text/html");
-          //        const img = doc.querySelector("img");
-          //        if (img) {
-          //          console.log("Image found:", img.src);
-          //          // Store it to a variable or print it directly in the function
-          //          imageTag = `<img src="${img.src}" />`;
-          //        } else {
-          //          console.log("No image found");
-          //        }
-          //      } else {
-          //        console.error("Error fetching page content:", response.error);
-          //      }
-          //    }
-          //  );
         });
 
         output += `
           <div class="card w-100 mb-3 p-0">
             <div class="card-body p-0">
-              <h6 class="card-title">${postText}</h5>
-              <p class="card-text">Published on: ${postTime}</p>
-              <p class="card-text">Impressions: ${postImpressions}</p>
-              <p class="card-text">Likes: ${postLikes}</p>
-              <p class="card-text">Responses: ${postResponses}</p>
-              <p class="card-text">Like Rate: ${postLikeRate}%</p>
-              <p class="card-text">Response Rate: ${postResponseRate}%</p>
-              ${postLink}
+              <p class="time">${postTime}</p>
+              <a class="card-title-link" href=${postLink} target="_blank" style="text-decoration: none; color: inherit;">
+                <h6 class="card-title" title="Click to View Post">${postText}</h6>
+              </a>
+              <div class="info-bar">
+                <span class="card-text likes">
+                  <i class="bi bi-suit-heart-fill" style="color: red;"></i>
+                  <span class="post-likes">${postLikes}<sup title="Like Rate (LR)" style="color:red;"> ${postLikeRate}%</sup></span>
+                </span>
+                <span class="card-text impressions" title="Post Impressions (Number of times your post was seen)">
+                  <i class="bi bi-bar-chart-line-fill" style="color:#333;"></i>
+                  <span class="post-impressions">${postImpressions}</span>
+                </span>
+                <span class="card-text comments">
+                  <i class="bi bi-chat"></i>
+                  <span class="post-comments">${postResponses}<sup title="Response Rate (Comment Rate)" style="color:red;"> ${postResponseRate}%</sup></span>
+                </span>
+              </div>
             </div>
           </div>
         `;
       });
     }
 
-    console.log("Generated HTML:", output);
     container.innerHTML = output;
   }
 
-  // function sortData(data, sortBy, order) {
-  //   console.log(`Sorting by: ${sortBy}, Order: ${order}`);
-
-  //   let res;
-
-  //   if (order === "asc") {
-  //     res = data.sort((a, b) => a[sortBy] - b[sortBy]);
-  //   } else if (order === "desc") {
-  //     res = data.sort((a, b) => b[sortBy] - a[sortBy]);
-  //   }
-
-  //   return res;
-  // }
-
   function sortData(data, sortBy, order) {
-    console.log(`Sorting by: ${sortBy}, Order: ${order}`);
-
     return data.sort((a, b) => {
       let aValue = a[sortBy];
       let bValue = b[sortBy];
@@ -308,57 +274,17 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
     }
 
-    console.log("Before sorting:", JSON.stringify(currentData, null, 2));
     currentData = sortData(currentData, sortField, order);
-    console.log("After sorting:", JSON.stringify(currentData, null, 2));
 
     printItems(currentData, input);
   }
 
-  // // Fetch data
-  // async function fetchData() {
-  //   try {
-  //     const res = await fetch("../json/table_data.json");
-  //     if (!res.ok) {
-  //       throw new Error(`HTTP error! status: ${res.status}`);
-  //     }
-
-  //     const data = await res.json();
-
-  //     let input = "";
-  //     printItems(data, input);
-
-  //     inputField.addEventListener("input", (e) => {
-  //       if (container !== "" && e.key !== "Backspace") {
-  //         container.innerHTML = "";
-  //         postCount.innerHTML = 0;
-  //       }
-
-  //       let input = e.target.value;
-  //       currentData = data.filter((i) => JSON.stringify(i).includes(input));
-
-  //       printItems(currentData, input);
-  //     });
-
-  //     // filter result
-  //     sortSelect.addEventListener("change", () => {
-  //       eventHelper();
-  //     });
-
-  //     sortBy.addEventListener("change", () => {
-  //       eventHelper();
-  //     });
-  //   } catch (error) {
-  //     console.error("Could not load JSON data:", error);
-  //   }
-  // }
 
   // Function to fetch data from chrome.storage.local
   function fetchDataFromStorage() {
     return new Promise((resolve, reject) => {
       chrome.storage.local.get("tableDataJson", (data) => {
         if (data.tableDataJson) {
-          console.log("Data fetched from storage:", data.tableDataJson);
           resolve(JSON.parse(data.tableDataJson));
         } else {
           console.error("No data found in storage");
