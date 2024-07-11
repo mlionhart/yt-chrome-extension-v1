@@ -4,10 +4,7 @@
   "version": "1.0",
   "description": "Allows Search of Community Posts",
   "permissions": [
-    "tabs",
-    "activeTab",
     "storage",
-    "scripting",
     "unlimitedStorage"
   ],
   "host_permissions": ["https://studio.youtube.com/*"],

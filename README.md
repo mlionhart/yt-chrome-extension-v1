@@ -30,6 +30,8 @@ To install this extension, follow these steps:
 
 4. Wait for the counter to count all the way down, and you will be notified when your zip file is downloaded.
 
+5. Click "Select File" and select the zip file that was just downloaded. It should have the word "Post" in the file name. This will unzip the file in the background, and parse the data for use in your extension. It will also show a preview of the raw data downloaded.  
+
 5. Click "Go to Home." This will load your posts into your main extension popup.
 
 6. After you complete this process, your posts should load automatically after opening the extension from now on.
