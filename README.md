@@ -52,6 +52,11 @@ If you encounter any issues or have questions, please reach out to us:
 - **GitHub Issues**: [Submit an issue](https://github.com/mlionhart/yt-chrome-extension-v1/issues)
 
 ## Changelog
+- **v1.1**:
+  - Added refresh button to main popup
+  - Fixed bug where data was not properly stored after file upload on first use only.
+  - Fixed bug where too many popup.html windows were being created after clicking "Home" button on zip file upload.
+  - Improved UI for better user experience.
 - **v1.0**: Initial release.
 
 ## License

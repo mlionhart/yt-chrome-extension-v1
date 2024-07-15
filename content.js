@@ -4,7 +4,8 @@ function clickExportButton() {
     exportButton.focus();
     exportButton.click();
 
-    setTimeout(clickDownloadLink, 5000); // Wait for export to complete, adjust the delay as needed
+    // Wait for export to complete, adjust the delay as needed
+    setTimeout(clickDownloadLink, 5000);
   } else {
     console.error("Export button not found.");
   }
@@ -20,7 +21,7 @@ function clickDownloadLink() {
   } else {
     console.error("Target element not found.");
   }
-  chrome.runtime.sendMessage({ action: "downloadComplete" });
+    chrome.runtime.sendMessage({ action: "downloadComplete" });    
 }
 
 // Listen for clickDownloadButton message from background script

@@ -1,6 +1,7 @@
 let tabCreated = false;
 let tabId = null;
 let channelId = null;
+let mainPopupCreated = false; // New flag for main popup
 
 function getLink(channelId) {
   const link = `https://studio.youtube.com/channel/${channelId}/analytics/tab-overview/period-4_weeks/explore?entity_type=CHANNEL&entity_id=${channelId}&time_period=lifetime&explore_type=TABLE_AND_CHART&metrics_computation_type=DELTA&metric=POST_IMPRESSIONS&granularity=DAY&t_metrics=POST_IMPRESSIONS&t_metrics=POST_LIKES&t_metrics=POST_VOTES&t_metrics=POST_LIKES_PER_IMPRESSIONS&t_metrics=POST_VOTES_PER_IMPRESSIONS&v_metrics=VIEWS&v_metrics=WATCH_TIME&v_metrics=SUBSCRIBERS_NET_CHANGE&v_metrics=TOTAL_ESTIMATED_EARNINGS&v_metrics=VIDEO_THUMBNAIL_IMPRESSIONS&v_metrics=VIDEO_THUMBNAIL_IMPRESSIONS_VTR&dimension=POST&o_column=POST_IMPRESSIONS&o_direction=ANALYTICS_ORDER_DIRECTION_DESC`;
@@ -24,7 +25,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           chrome.windows.create({
             url: chrome.runtime.getURL("popup2.html"),
             type: "popup",
-            width: 250,
+            width: 252,
             height: 300,
           });
         });
@@ -114,32 +115,39 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if (request.action === "openMainPopup") {
-    // Close popup2.html window
-    chrome.windows.remove(sender.tab.windowId, () => {
-      // Open the extension's main popup
-      chrome.windows.create(
-        {
-          url: chrome.runtime.getURL("popup.html"),
-          type: "popup",
-          width: 530,
-          height: 650,
-        },
-        (window) => {
-          if (chrome.runtime.lastError) {
-            console.error(
-              "Error opening main popup:",
-              chrome.runtime.lastError.message
-            );
-            sendResponse({
-              success: false,
-              error: chrome.runtime.lastError.message,
-            });
-          } else {
-            sendResponse({ success: true });
+    console.log("Received openMainPopup action");
+
+    if (!mainPopupCreated) {
+      mainPopupCreated = true; // Set the flag to true to prevent multiple creations
+
+      chrome.windows.remove(sender.tab.windowId, () => {
+        chrome.windows.create(
+          {
+            url: chrome.runtime.getURL("popup.html"),
+            type: "popup",
+            width: 530,
+            height: 650,
+          },
+          (window) => {
+            if (chrome.runtime.lastError) {
+              console.error(
+                "Error opening main popup:",
+                chrome.runtime.lastError.message
+              );
+              sendResponse({
+                success: false,
+                error: chrome.runtime.lastError.message,
+              });
+            } else {
+              sendResponse({ success: true });
+            }
+            mainPopupCreated = false; // Reset the flag after creating the popup
           }
-        }
-      );
-    });
+        );
+      });
+    } else {
+      sendResponse({ success: false, error: "Main popup already created" });
+    }
 
     return true; // Keep the message channel open for sendResponse
   } else if (request.action === "closeWindowOnly") {
@@ -147,7 +155,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     chrome.windows.remove(sender.tab.windowId, () => {
       sendResponse({ success: true });
     });
+
+    // message popup.html window to reload
+    chrome.runtime.sendMessage(
+      { action: "reload" },
+      (response) => {
+        if (chrome.runtime.lastError) {
+          console.error(
+            "Error sending reload message:",
+            chrome.runtime.lastError.message
+          );
+        }
+      }
+    );
   }
+
+  return true;
 });
 
 

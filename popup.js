@@ -7,8 +7,16 @@ document.addEventListener("DOMContentLoaded", function () {
   const updateLink = document.querySelector(".update-link");
   const updateLinkZip = document.querySelector(".update-link-zip");
   const dropbtn = document.querySelector(".dropbtn");
-  const message = document.getElementById("message");
+  const message = document.querySelector(".message");
+  const refreshButton = document.querySelector("#refresh");
   let currentData = [];
+
+  // listen to popup2 for signal to reload
+  chrome.runtime.onMessage.addListener(function (message) {
+    if (message.action === "reload") {
+      location.reload();
+    }
+  });
 
   /* Toggle between hiding and showing the dropdown content */
   dropbtn.addEventListener("click", () => {
@@ -42,9 +50,13 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
+  refreshButton.addEventListener("click", () => {
+    location.reload();
+    // fetchData();
+  });
+
   // Added event listener for update link
   updateLink.addEventListener("click", () => {
-
     // Check if channel ID is in local storage
     chrome.storage.local.get("channel-id", (result) => {
       let channelId = result["channel-id"];
@@ -76,8 +88,8 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Error during zip upload:", response.error);
       }
     });
+    return true;
   });
-
 
   function highlight(p, word) {
     const lowerCaseWord = word.toLowerCase();
@@ -90,7 +102,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return newStr;
   }
 
-  
   function printItems(res, inp) {
     let output = "";
 
@@ -279,7 +290,6 @@ document.addEventListener("DOMContentLoaded", function () {
     printItems(currentData, input);
   }
 
-
   // Function to fetch data from chrome.storage.local
   function fetchDataFromStorage() {
     return new Promise((resolve, reject) => {
@@ -315,7 +325,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         let input = e.target.value;
-        currentData = data.filter((i) => JSON.stringify(i).toLowerCase().includes(input));
+        currentData = data.filter((i) =>
+          JSON.stringify(i).toLowerCase().includes(input)
+        );
 
         printItems(currentData, input);
       });
@@ -330,15 +342,17 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       message.innerHTML = "Data Loaded";
+      refreshButton.style.display = "none";
 
       // Clear the message after 5 seconds (5000 milliseconds)
       setTimeout(() => {
         message.innerHTML = "";
+        refreshButton.style.display = "inline-block";
       }, 5000);
-
     } catch (error) {
       console.error("Could not load data from storage:", error);
-      message.innerHTML = "No data loaded. Click the Blue Update button";
+      message.innerHTML =
+        "No data loaded. Click the Blue Update button --> Get Latest Data";
     }
   }
 
