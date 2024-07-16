@@ -18,10 +18,12 @@ function clickDownloadLink() {
   if (targetElement) {
     targetElement.focus();
     targetElement.click();
+    setTimeout(() => {
+      chrome.runtime.sendMessage({ action: "downloadComplete" });
+    }, 1000);  
   } else {
     console.error("Target element not found.");
   }
-    chrome.runtime.sendMessage({ action: "downloadComplete" });    
 }
 
 // Listen for clickDownloadButton message from background script

@@ -47,6 +47,10 @@ document.addEventListener("DOMContentLoaded", function () {
   chrome.runtime.onMessage.addListener(function (message) {
     if (message.action === "downloadComplete") {
       // after file downloads, hide export button, show file select
+
+      // Clear the countdown interval
+      clearInterval(countdown);
+
       timerDiv.innerHTML = `<h1 style="text-align:center;color:red;">Download Complete!</h1><p style="text-align:center;">Click "Select File" and select the zip file that was just downloaded</p>`;
       window.resizeTo(270, 300);
 
@@ -62,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function timerDivCountdown() {
     let countdownValue = 0;
 
-    const countdown = setInterval(() => {
+    countdown = setInterval(() => {
       if (countdownValue < 1500) {
         // timerDiv.innerHTML = `<h1 style="text-align:center;color:red;">${countdownValue}</h1>`;
         timerDiv.innerHTML = `<div style="display:flex;flex-direction:column;gap:10px;justify-content:center;align-items:center;margin:15px auto;text-align:center;"><label for="file">Downloading data:</label>
@@ -139,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const newElement = document.createElement("p");
       newElement.style.textAlign = "center";
       newElement.innerHTML =
-        'Click the "Home" button and the main extension will refresh -->';
+        'Click "Finish" and the main extension will refresh -->';
       h1.insertAdjacentElement("afterend", newElement);
     }
     homeButton.style.display = "block";

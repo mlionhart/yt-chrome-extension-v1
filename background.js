@@ -110,7 +110,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 
-
 // listen for openMainPopup message from popup2.js
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
